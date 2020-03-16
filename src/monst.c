@@ -1,4 +1,4 @@
-/* NetHack 3.6	monst.c	$NHDT-Date: 1582061573 2020/02/18 21:32:53 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.72 $ */
+/* NetHack 3.6	monst.c	$NHDT-Date: 1584153782 2020/03/14 02:43:02 $  $NHDT-Branch: LOCAL-siren $:$NHDT-Revision: 1.73 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -606,6 +606,12 @@ NEARDATA struct permonst mons_init[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(600, 300, MS_SEDUCE, MZ_HUMAN), 0, 0, M1_HUMANOID | M1_TPORT,
         M2_HOSTILE | M2_FEMALE | M2_COLLECT, M3_INFRAVISIBLE, 5, CLR_BROWN),
+    MON("siren", S_NYMPH, LVL(8, 12, 9, 20, 0), (G_GENO | G_NOGEN),
+        A(ATTK(AT_SING, AD_LURE, 0, 0), ATTK(AT_CLAW, AD_SEDU, 0, 0),
+	  ATTK(AT_TUCH, AD_WRAP, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(600, 300, MS_MUMBLE, MZ_HUMAN), 0, 0,
+        M1_HUMANOID | M1_AMPHIBIOUS | M1_SWIM, M2_HOSTILE | M2_FEMALE,
+        M3_INFRAVISIBLE, 5, CLR_WHITE),
     /*
      * orcs
      */

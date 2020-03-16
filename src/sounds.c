@@ -1,4 +1,4 @@
-/* NetHack 3.6	sounds.c	$NHDT-Date: 1582061574 2020/02/18 21:32:54 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.96 $ */
+/* NetHack 3.6	sounds.c	$NHDT-Date: 1584153783 2020/03/14 02:43:03 $  $NHDT-Branch: LOCAL-siren $:$NHDT-Revision: 1.97 $ */
 /*      Copyright (c) 1989 Janet Walz, Mike Threepoint */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -752,7 +752,12 @@ register struct monst *mtmp;
         break;
     }
     case MS_MUMBLE:
-        pline_msg = "mumbles incomprehensibly.";
+        if (ptr == &mons[PM_SIREN]) {
+            /* Vague; not actually luring anyone to their death at the moment. */
+            pline_msg = "murmurs a mystic strophe of haunting melody.";
+        } else {
+            pline_msg = "mumbles incomprehensibly.";
+        }
         break;
     case MS_ORC: /* this used to be an alias for grunt, now it is distinct */
         pline_msg = "grunts.";
