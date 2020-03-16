@@ -1,4 +1,4 @@
-/* NetHack 5.0	monattk.h	$NHDT-Date: 1781973083 2026/06/20 16:31:23 $  $NHDT-Branch: NetHack-5.0 $:$NHDT-Revision: 1.23 $ */
+/* NetHack 3.6	monattk.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* NetHack may be freely redistributed.  See license for details. */
 /* Copyright 1988, M. Stephenson */
 
@@ -24,6 +24,7 @@
 #define AT_BOOM 14  /* explodes when killed */
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
+#define AT_SING 17  /* sing - ranged */
 
 #define AT_WEAP 254 /* uses weapon */
 #define AT_MAGC 255 /* uses magic spell(s) */
@@ -83,6 +84,7 @@
 #define AD_ENCH 41  /* remove enchantment (disenchanter) */
 #define AD_CORR 42  /* corrode armor (black pudding) */
 #define AD_POLY 43  /* polymorph the target (genetic engineer) */
+#define AD_LURE 44  /* lure victim toward attacker (siren) */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */
