@@ -695,10 +695,14 @@ register struct monst *mtmp;
         }
         break;
     case S_NYMPH:
-        if (!rn2(2))
-            (void) mongets(mtmp, MIRROR);
-        if (!rn2(2))
-            (void) mongets(mtmp, POT_OBJECT_DETECTION);
+        if (ptr == &mons[PM_SIREN]) {
+            (void) mongets(mtmp, rn2(2) ? MAGIC_HARP : MAGIC_FLUTE);
+        } else {
+            if (!rn2(2))
+                (void) mongets(mtmp, MIRROR);
+            if (!rn2(2))
+                (void) mongets(mtmp, POT_OBJECT_DETECTION);
+        }
         break;
     case S_GIANT:
         if (ptr == &mons[PM_MINOTAUR]) {

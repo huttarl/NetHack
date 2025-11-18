@@ -978,7 +978,7 @@ rndtrap()
 /*
  * Coordinates in special level files are handled specially:
  *
- *      if x or y is < 0, we generate a random coordinate.
+ *      if x < 0, we generate a random coordinate.
  *      The "humidity" flag is used to insure that engravings aren't
  *      created underwater, or eels on dry land.
  */
