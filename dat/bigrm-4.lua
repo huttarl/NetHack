@@ -23,6 +23,9 @@ des.map([[
 -----------                                                     -----------
 ]]);
 
+-- Include a siren?
+place_siren()
+
 des.region(selection.area(01,01,73,16), "lit");
 
 des.stair("up");

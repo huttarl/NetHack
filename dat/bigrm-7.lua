@@ -28,6 +28,9 @@ local terrain = { "L", "T", "{", "." };
 local tidx = math.random(1, #terrain);
 des.replace_terrain({ region={00,00, 74,18}, fromterrain="L", toterrain=terrain[tidx] });
 
+-- Maybe include a siren
+place_siren(-1)
+
 des.region(selection.area(01,01,73,17), "lit");
 
 des.stair("up");

@@ -36,8 +36,7 @@ end;
 
 des.region(selection.area(00,00,70,18), "lit");
 
--- when falling down on this level, never end up in the fog maze
-des.teleport_region({ region = {00,00,70,18}, exclude = {02,03,68,15}, dir = "down" });
+-- No siren on this level, because the lake would conflict with the maze.
 
 for i = 1,15 do
    des.object();

@@ -24,6 +24,8 @@ des.map([[
 ]]);
 
 -- Dungeon Description
+place_siren()
+
 des.region(selection.area(01,01,73,16), "lit");
 
 -- Stairs
@@ -41,6 +43,8 @@ for i = 1,6 do
    des.trap();
 end
 
+local include_siren = place_siren()
+
 des.monster({ x = 01, y = 01 });
 des.monster({ x = 13, y = 01 });
 des.monster({ x = 25, y = 01 });
@@ -50,16 +54,20 @@ des.monster({ x = 61, y = 01 });
 des.monster({ x = 73, y = 01 });
 des.monster({ x = 07, y = 07 });
 des.monster({ x = 13, y = 07 });
-des.monster({ x = 25, y = 07 });
-des.monster({ x = 37, y = 07 });
-des.monster({ x = 49, y = 07 });
+   -- These three could end up in siren's lake. But that's ok.
+   des.monster({ x = 25, y = 07 });
+   des.monster({ x = 37, y = 07 });
+   des.monster({ x = 49, y = 07 });
+
 des.monster({ x = 61, y = 07 });
 des.monster({ x = 67, y = 07 });
 des.monster({ x = 07, y = 09 });
 des.monster({ x = 13, y = 09 });
-des.monster({ x = 25, y = 09 });
-des.monster({ x = 37, y = 09 });
-des.monster({ x = 49, y = 09 });
+   -- These three could end up in siren's lake.
+   des.monster({ x = 25, y = 09 });
+   des.monster({ x = 37, y = 09 });
+   des.monster({ x = 49, y = 09 });
+
 des.monster({ x = 61, y = 09 });
 des.monster({ x = 67, y = 09 });
 des.monster({ x = 01, y = 16 });
