@@ -51,6 +51,25 @@ function monkfoodshop()
    return "food shop";
 end
 
+-- Maybe place a siren, with an elliptical lake. Positive 'growth' means a larger lake.
+function place_siren(growth)
+   -- Only do it 50% of the time.
+   if percent(50) then return false end
+   growth = growth or 0
+   -- Make a lake
+   des.terrain(selection.ellipse(37, 9, 12+growth, 4+growth, 1), "}")
+   -- with an island in it.
+   des.terrain(selection.ellipse(37, 9, 4+growth, math.max(2+growth, 1), 1), ".")
+   -- When falling/teleporting to this level, don't end up in the lake.
+   des.teleport_region({ region = {00,00,70,18}, exclude = {25-growth, 5-growth, 49+growth, 13+growth} });
+   -- Place siren.
+   des.monster("siren", 37, 9)
+   -- TODO: There should be some kind of treasure, on its person or on island.
+   -- Possibly bones piles (see Homer). Siren already has a magic harp or flute.
+   -- https://en.wikipedia.org/wiki/Siren_(mythology)
+   return true
+end
+
 -- tweaks to gehennom levels; might add random lava pools or
 -- a lava river.
 -- protected_area is a selection where no changes will be done.

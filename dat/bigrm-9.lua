@@ -28,6 +28,9 @@ des.map([[
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 ]]);
 
+-- Include a siren?
+local include_siren = place_siren(-2)
+
 -- Unlit, except 3 mapgrids around the "pupil"
 des.region(selection.area(00,00,73,18),"unlit");
 des.region(selection.area(26,04,47,14),"lit");

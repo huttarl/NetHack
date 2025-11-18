@@ -28,6 +28,8 @@ des.map([[
                             ------------------                            
 ]]);
 
+local include_siren = place_siren()
+
 
 if percent(25) then
    local sel = selection.match("."):percentage(2):grow();
