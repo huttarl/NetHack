@@ -33,6 +33,8 @@ if percent(40) then
    des.replace_terrain({ region={00,00, 74,17}, fromterrain="F", toterrain=terrain[tidx] });
 end;
 
+place_siren(-1)
+
 des.region(selection.area(01,01,73,16), "lit");
 
 des.stair("up");

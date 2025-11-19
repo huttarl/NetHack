@@ -1,7 +1,9 @@
 -- NetHack nhlib.lua	$NHDT-Date: 1652196140 2022/05/10 15:22:20 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.4 $
 --	Copyright (c) 2021 by Pasi Kallinen
 -- NetHack may be freely redistributed.  See license for details.
--- compatibility shim
+
+-- With one argument max: return a random integer between 1 and max inclusive.
+-- With two arguments min and max: return a random integer between min and max inclusive.
 math.random = function(...)
    local arg = {...};
    if (#arg == 1) then
@@ -37,7 +39,6 @@ function d(dice, faces)
       end
       return sum
    end
-end
 
 -- percent(20) returns true 20% of the time
 function percent(threshold)
@@ -49,6 +50,25 @@ function monkfoodshop()
       return "health food shop";
    end
    return "food shop";
+end
+
+-- Maybe place a siren, with an elliptical lake. Positive 'growth' means a larger lake.
+function place_siren(growth)
+   -- Only do it 50% of the time.
+   if percent(50) then return false end
+   growth = growth or 0
+   -- Make a lake
+   des.terrain(selection.ellipse(37, 9, 12+growth, 4+growth, 1), "}")
+   -- with an island in it.
+   des.terrain(selection.ellipse(37, 9, 4+growth, math.max(2+growth, 1), 1), ".")
+   -- When falling/teleporting to this level, don't end up in the lake.
+   des.teleport_region({ region = {00,00,70,18}, exclude = {25-growth, 5-growth, 49+growth, 13+growth} });
+   -- Place siren.
+   des.monster("siren", 37, 9)
+   -- TODO: There should be some kind of treasure, on its person or on island.
+   -- Possibly bones piles (see Homer). Siren already has a magic harp or flute.
+   -- https://en.wikipedia.org/wiki/Siren_(mythology)
+   return true
 end
 
 -- tweaks to gehennom levels; might add random lava pools or
@@ -240,3 +260,4 @@ function tutorial_turn()
    end
    -- nh.pline("TUT:turn");
 end
+

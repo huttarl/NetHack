@@ -5,8 +5,8 @@
 #ifndef MONATTK_H
 #define MONATTK_H
 
-/*      Add new attack types below - ordering affects experience (exper.c).
- *      Attacks > AT_BUTT are worth extra experience.
+/*	Add new attack types below - ordering affects experience (exper.c).
+ *	Attacks > AT_BUTT are worth extra experience.
  */
 #define AT_ANY (-1) /* fake attack; dmgtype_fromattack wildcard */
 #define AT_NONE 0   /* passive monster (ex. acid blob) */
@@ -24,6 +24,7 @@
 #define AT_BOOM 14  /* explodes when killed */
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
+#define AT_SING 17  /* sing - ranged */
 
 #define AT_WEAP 254 /* uses weapon */
 #define AT_MAGC 255 /* uses magic spell(s) */
@@ -31,12 +32,13 @@
 #define DISTANCE_ATTK_TYPE(atyp) ((atyp) == AT_SPIT \
                                   || (atyp) == AT_BREA \
                                   || (atyp) == AT_MAGC \
-                                  || (atyp) == AT_GAZE)
+                                  || (atyp) == AT_GAZE
+                                  || (atyp) == AT_SING)
 
-/*      Add new damage types below.
+/*	Add new damage types below.
  *
- *      Note that 1-10 correspond to the types of attack used in buzz().
- *      Please don't disturb the order unless you rewrite the buzz() code.
+ *	Note that 1-10 correspond to the types of attack used in buzz().
+ *	Please don't disturb the order unless you rewrite the buzz() code.
  */
 #define AD_ANY (-1) /* fake damage; attacktype_fordmg wildcard */
 #define AD_PHYS 0   /* ordinary physical */
@@ -83,6 +85,7 @@
 #define AD_ENCH 41  /* remove enchantment (disenchanter) */
 #define AD_CORR 42  /* corrode armor (black pudding) */
 #define AD_POLY 43  /* polymorph the target (genetic engineer) */
+#define AD_LURE 44  /* lure by song (siren) */
 
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */

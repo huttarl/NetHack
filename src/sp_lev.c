@@ -1193,8 +1193,8 @@ rndtrap(void)
  * Translate a given coordinate from a special level definition into an actual
  * location on the map.
  *
- * If x or y is negative, we generate a random coordinate within the area. If
- * not negative, they are interpreted as relative to the last defined map or
+ * If x is negative, we generate a random coordinate within the area.
+ * Otherwise, x and y are interpreted as relative to the last defined map or
  * room, and are output as absolute svl.level.locations coordinates.
  *
  * The "humidity" flag is used to ensure that engravings aren't created

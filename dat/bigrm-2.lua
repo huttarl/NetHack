@@ -27,6 +27,8 @@ des.map([[
 ---------------------------------------------------------------------------
 ]]);
 -- Dungeon Description
+place_siren()
+
 des.region(selection.area(01,01,73,16),"lit");
 
 local darkness;

@@ -27,19 +27,22 @@ des.map([[
 ---------------------------------------------------------------------------
 ]]);
 
+local include_siren = place_siren()
 
 if percent(75) then
+   -- Other features can clobber lake and island, but not siren herself.
    local terrains = { "-", "F", "L", "T", "C" };
    local tidx = math.random(1, #terrains);
    local choice = math.random(0, 4);
-   if choice == 0 then
+   -- Don't make terrain that covers the siren's square.
+   if choice == 0 and not include_siren then
       -- one horizontal line
       des.terrain(selection.line(10,8, 65,8), terrains[tidx]);
    elseif choice == 1 then
       -- two vertical lines
       local sel = selection.line(15,4, 15, 13) | selection.line(59,4, 59, 13);
       des.terrain(sel, terrains[tidx]);
-   elseif choice == 2 then
+   elseif choice == 2 and not include_siren then
       -- plus sign
       local sel = selection.line(10,8, 64, 8) | selection.line(37,3, 37, 14);
       des.terrain(sel, terrains[tidx]);

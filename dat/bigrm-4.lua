@@ -39,6 +39,9 @@ des.feature("fountain", 05,15);
 des.feature("fountain", 69,02);
 des.feature("fountain", 69,15);
 
+-- Include a siren?
+place_siren()
+
 des.region(selection.area(01,01,73,16), "lit");
 
 des.stair("up");

@@ -34,6 +34,8 @@ if percent(25) then
    des.replace_terrain({ selection=sel, fromterrain=".", toterrain=percent(50) and "I" or "C" });
 end
 
+local include_siren = place_siren()
+
 des.region(selection.area(00,00,72,18), "lit");
 
 des.stair("up");
