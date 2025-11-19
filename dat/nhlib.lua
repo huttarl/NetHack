@@ -51,10 +51,11 @@ function monkfoodshop()
    return "food shop";
 end
 
--- Maybe place a siren, with an elliptical lake. Positive 'growth' means a larger lake.
+-- Maybe place a siren or two, with an elliptical lake. Positive 'growth' means a larger lake.
 function place_siren(growth)
-   -- Only do it 50% of the time.
-   if percent(50) then return false end
+   -- Make 0-2 sirens.
+   local num_sirens = d(2,2) - 2
+   if num_sirens < 1 then return false end
    growth = growth or 0
    -- Make a lake
    des.terrain(selection.ellipse(37, 9, 12+growth, 4+growth, 1), "}")
@@ -62,11 +63,37 @@ function place_siren(growth)
    des.terrain(selection.ellipse(37, 9, 4+growth, math.max(2+growth, 1), 1), ".")
    -- When falling/teleporting to this level, don't end up in the lake.
    des.teleport_region({ region = {00,00,70,18}, exclude = {25-growth, 5-growth, 49+growth, 13+growth} });
-   -- Place siren.
+   -- Place siren(s).
    des.monster("siren", 37, 9)
+   if num_sirens > 1 then des.monster("siren", 38, 9) end
    -- TODO: There should be some kind of treasure, on its person or on island.
    -- Possibly bones piles (see Homer). Siren already has a magic harp or flute.
-   -- https://en.wikipedia.org/wiki/Siren_(mythology)
+   -- Rotting player corpses
+   for i = 1,(num_sirens * 2 + d(2)) do
+      -- place around sirens
+      local x = 37 + (d(2) * 2 - 3) * (d(2) + 1)
+      local y = 9 + (d(2) * 2 - 3) * (d(2) + 1)
+      -- TODO: not just human, but probably elf, dwarf, gnome, orc.
+      des.object({ id="corpse", montype="human", x=x, y=y })
+      des.object("[", x, y)
+      des.object(")", x, y)
+      des.gold(d(3,100), x, y)
+      des.object("*", x, y)
+      local choice = d(4)
+      -- Rope with which Odysseus was tied to the mast, wax for sailors' ears
+      if choice == 1 then
+         des.object("leash", x, y)
+      elseif choice == 3 then
+         des.object("bullwhip", x, y)
+      else
+         des.object("wax candle", x, y)
+      end
+   end
+
+   for i = 1,2 do
+      -- Does this pick a random location? a suitable one?
+      des.monster("rope golem")
+   end
    return true
 end
 

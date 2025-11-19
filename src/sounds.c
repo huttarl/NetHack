@@ -982,12 +982,7 @@ domonnoise(struct monst *mtmp)
         break;
     }
     case MS_MUMBLE:
-        if (ptr == &mons[PM_SIREN]) {
-            /* Vague; not actually luring anyone to their death at the moment. */
-            pline_msg = "murmurs a mystic strophe of haunting melody.";
-        } else {
-            pline_msg = "mumbles incomprehensibly.";
-        }
+        pline_msg = "mumbles incomprehensibly.";
         break;
     case MS_ORC: /* this used to be an alias for grunt, now it is distinct */
         Soundeffect(se_orc_grunt, 60);

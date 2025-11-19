@@ -32,7 +32,8 @@
 #define DISTANCE_ATTK_TYPE(atyp) ((atyp) == AT_SPIT \
                                   || (atyp) == AT_BREA \
                                   || (atyp) == AT_MAGC \
-                                  || (atyp) == AT_GAZE)
+                                  || (atyp) == AT_GAZE \
+                                  || (atyp) == AT_SING)
 
 /*      Add new damage types below.
  *
