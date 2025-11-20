@@ -763,6 +763,7 @@ make_corpse(struct monst *mtmp, unsigned int corpseflags)
     case PM_KOBOLD_LEADER: case PM_KOBOLD_SHAMAN: case PM_LEPRECHAUN:
     case PM_SMALL_MIMIC: case PM_LARGE_MIMIC: case PM_GIANT_MIMIC:
     case PM_WOOD_NYMPH: case PM_WATER_NYMPH: case PM_MOUNTAIN_NYMPH:
+    case PM_SIREN:
     case PM_GOBLIN: case PM_HOBGOBLIN: case PM_ORC: case PM_HILL_ORC:
     case PM_MORDOR_ORC: case PM_URUK_HAI: case PM_ORC_SHAMAN:
     case PM_ORC_CAPTAIN:
