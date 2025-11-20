@@ -1852,9 +1852,9 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
-#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
-        if (mcanseeu && gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
+        if (mcanseeu && mdistu(mtmp) < 4*4 &&
+             gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
             if (cancelled) {
                 react = 6;                      /* "tired" */
                 already = (mtmp->mfrozen != 0); /* can't happen... */
@@ -1866,6 +1866,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLOW:
         if (mcanseeu
             && (HFast & (INTRINSIC | TIMEOUT)) && !defended(mtmp, AD_SLOW)

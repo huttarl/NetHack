@@ -66,9 +66,7 @@ function place_siren(growth)
    -- Place siren(s).
    des.monster("siren", 37, 9)
    if num_sirens > 1 then des.monster("siren", 38, 9) end
-   -- TODO: There should be some kind of treasure, on its person or on island.
-   -- Possibly bones piles (see Homer). Siren already has a magic harp or flute.
-   -- Rotting player corpses
+   -- Rotting player corpses with possessions
    for i = 1,(num_sirens * 2 + d(2)) do
       -- place around sirens
       local x = 37 + (d(2) * 2 - 3) * (d(2) + 1)
