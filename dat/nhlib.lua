@@ -14,16 +14,6 @@ math.random = function(...)
    end
 end
 
-function shuffle(list)
-   for i = #list, 2, -1 do
-      local j = math.random(i)
-      list[i], list[j] = list[j], list[i]
-   end
-end
-
-align = { "law", "neutral", "chaos" };
-shuffle(align);
-
 -- d(2,6) = 2d6
 -- d(20) = 1d20 (single argument = implicit 1 die)
 function d(dice, faces)
@@ -44,6 +34,16 @@ function percent(threshold)
    return math.random(0, 99) < threshold
 end
 
+function shuffle(list)
+   for i = #list, 2, -1 do
+      local j = math.random(i)
+      list[i], list[j] = list[j], list[i]
+   end
+end
+
+align = { "law", "neutral", "chaos" };
+shuffle(align);
+
 function monkfoodshop()
    if (u.role == "Monk") then
       return "health food shop";
@@ -51,41 +51,43 @@ function monkfoodshop()
    return "food shop";
 end
 
--- Maybe place a siren or two, with an elliptical lake. Positive 'growth' means a larger lake.
+-- Maybe place a siren or two, on an island in an elliptical lake.
+--    Positive 'growth' means a larger lake.
+-- Returns true if placed any sirens.
 function place_siren(growth)
    -- Make 0-2 sirens.
-   local num_sirens = nh.rn2(2) + nh.rn2(2)
+   local num_sirens = d(2,2)
    if num_sirens < 1 then return false end
    growth = growth or 0
    -- Make a lake
-   des.terrain(selection.ellipse(37, 9, 12+growth, 4+growth, 1), "}")
+   des.terrain(selection.ellipse(37, 9, 12 + growth, 4 + growth, 1), "}")
    -- with an island in it.
-   des.terrain(selection.ellipse(37, 9, 4+growth, math.max(2+growth, 1), 1), ".")
+   des.terrain(selection.ellipse(37, 9, 4 + growth, math.max(2 + growth, 1), 1), ".")
    -- When falling/teleporting to this level, don't end up in the lake.
-   des.teleport_region({ region = {00,00,70,18}, exclude = {25-growth, 5-growth, 49+growth, 13+growth} });
+   des.teleport_region({ region = {00,00,70,18},
+      exclude = {25 - growth, 5 - growth, 49 + growth, 13 + growth} });
    -- Place siren(s).
    des.monster("siren", 37, 9)
    if num_sirens > 1 then des.monster("siren", 38, 9) end
    -- Rotting player corpses with possessions
-   for i = 1,(num_sirens * 2 + nh.rn2(2) + 1) do
+   local races = {"human", "elf"}
+   for i = 1,d(3, 2) do
       -- place around sirens
       local x = 37 + (nh.rn2(2) * 2 - 1) * (nh.rn2(2) + 2)
       local y =  9 + (nh.rn2(2) * 2 - 1) * (nh.rn2(2) + 1)
-      -- TODO: not just human, but probably elf, dwarf, gnome, orc.
-      des.object({ id="corpse", montype="human", x=x, y=y })
-      des.object("[", x, y)
-      des.object(")", x, y)
-      des.gold(d(3,100), x, y)
-      des.object("*", x, y)
-      local choice = d(4)
-      -- Rope with which Odysseus was tied to the mast, wax for sailors' ears
-      if choice == 1 then
-         des.object("leash", x, y)
-      elseif choice == 3 then
-         des.object("bullwhip", x, y)
-      else
-         des.object("wax candle", x, y)
-      end
+      des.object({ id="corpse", montype=races[d(2)], x=x, y=y })
+      if percent(90) then des.object("[", x, y) end
+      if percent(90) then des.object(")", x, y) end
+      des.gold(d(5,100), x, y)
+      if percent(50) then des.object("*", x, y) end
+      -- No food in possession; the victim starved to death listening to the siren's song.
+      -- Rope with which Odysseus was tied to the mast, wax for sailors' ears.
+      if percent(25) then des.object("leash", x, y) end
+      if percent(25) then des.object("bullwhip", x, y) end
+      if percent(25) then des.object("wax candle", x, y) end
+      -- Resistance to siren's powers
+      if percent(25) then des.object("ring of free action", x, y) end
+      if percent(25) then des.object({ id="corpse", montype="homunculus", x=x, y=y }) end
    end
 
    for i = 1,2 do
