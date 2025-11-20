@@ -54,7 +54,7 @@ end
 -- Maybe place a siren or two, with an elliptical lake. Positive 'growth' means a larger lake.
 function place_siren(growth)
    -- Make 0-2 sirens.
-   local num_sirens = d(2,2) - 2
+   local num_sirens = nh.rn2(2) + nh.rn2(2)
    if num_sirens < 1 then return false end
    growth = growth or 0
    -- Make a lake
@@ -67,10 +67,10 @@ function place_siren(growth)
    des.monster("siren", 37, 9)
    if num_sirens > 1 then des.monster("siren", 38, 9) end
    -- Rotting player corpses with possessions
-   for i = 1,(num_sirens * 2 + d(2)) do
+   for i = 1,(num_sirens * 2 + nh.rn2(2) + 1) do
       -- place around sirens
-      local x = 37 + (d(2) * 2 - 3) * (d(2) + 1)
-      local y = 9 + (d(2) * 2 - 3) * (d(2) + 1)
+      local x = 37 + (nh.rn2(2) * 2 - 1) * (nh.rn2(2) + 2)
+      local y =  9 + (nh.rn2(2) * 2 - 1) * (nh.rn2(2) + 1)
       -- TODO: not just human, but probably elf, dwarf, gnome, orc.
       des.object({ id="corpse", montype="human", x=x, y=y })
       des.object("[", x, y)
