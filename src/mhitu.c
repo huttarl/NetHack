@@ -494,9 +494,9 @@ mattacku(struct monst *mtmp)
     int i, j = 0, tmp, sum[NATTK];
     struct permonst *mdat = mtmp->data;
     /*
-     * ranged: Is it near you?  Affects your actions.
-     * range2: Does it think it's near you?  Affects its actions.
-     * foundyou: Is it attacking you or your image?
+     * ranged: Is it far from you?  Affects your actions.
+     * range2: Does it think it's far from you?  Affects its actions.
+     * foundyou: Is it attacking you (not your image)?
      * youseeit: Can you observe the attack?  It might be attacking your
      *     image around the corner, or invisible, or you might be blind.
      * skipnonmagc: Are further physical attack attempts useless?  (After
