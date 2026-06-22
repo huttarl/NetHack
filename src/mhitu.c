@@ -929,6 +929,11 @@ mattacku(struct monst *mtmp)
             else
                 sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
             break;
+        case AT_SING:
+            /* Siren's song pulls player closer. */
+            if (range2)
+                sum[i] = singmu(mtmp, mattk);
+            break;
 
         default: /* no attack */
             break;
@@ -1852,6 +1857,7 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
+#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLEE:
         if (mcanseeu && mdistu(mtmp) < 4*4 &&
              gm.multi >= 0 && !rn2(5) && !Sleep_resistance) {
@@ -1866,7 +1872,6 @@ gazemu(struct monst *mtmp, struct attack *mattk)
             }
         }
         break;
-#ifdef PM_BEHOLDER /* work in progress */
     case AD_SLOW:
         if (mcanseeu
             && (HFast & (INTRINSIC | TIMEOUT)) && !defended(mtmp, AD_SLOW)
