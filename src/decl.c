@@ -247,6 +247,7 @@ static const struct instance_globals_c g_init_c = {
     /* decl.c */
     UNDEFINED_VALUES, /* chosen_windowtype */
     0, /* cmd_key */
+    NULL, /* cmd_bind */
     0L, /* command_count */
     UNDEFINED_PTR, /* current_wand */
 #ifdef DEF_PAGER
@@ -591,7 +592,7 @@ static const struct instance_globals_o g_init_o = {
     /* o_init.c */
     DUMMY, /* oclass_prob_totals */
     /* options.c */
-    0, /* opt_phase */
+    phase_not_set, /* opt_phase */
     FALSE, /* opt_initial */
     FALSE, /* opt_from_file */
     FALSE, /* opt_need_redraw */
@@ -925,6 +926,11 @@ static const struct instance_globals_saved_m init_svm = {
 static const struct instance_globals_saved_n init_svn = {
     /* dungeon.c */
     0,                                   /* n_dgns */
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0
+    },                                   /* nhuuid */
     /* mkroom.c */
     0,                                   /* nroom */
     /* region.c */
@@ -1059,6 +1065,12 @@ const struct const_globals cg = {
     } while(0);
 
 void
+program_state_init(void)
+{
+    program_state = init_program_state;
+}
+
+void
 decl_globals_init(void)
 {
 #if 0
@@ -1109,7 +1121,6 @@ decl_globals_init(void)
     svu = init_svu;
     svx = init_svx;
     svy = init_svy;
-    program_state = init_program_state;
 
     gv.valuables[0].list = gg.gems;
     gv.valuables[0].size = SIZE(gg.gems);

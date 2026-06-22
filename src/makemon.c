@@ -1,4 +1,4 @@
-/* NetHack 3.7	makemon.c	$NHDT-Date: 1720128166 2024/07/04 21:22:46 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.249 $ */
+/* NetHack 3.7	makemon.c	$NHDT-Date: 1770949988 2026/02/12 18:33:08 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.271 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2012. */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -738,7 +738,7 @@ m_initinv(struct monst *mtmp)
         break;
     case S_GIANT:
         if (ptr == &mons[PM_MINOTAUR]) {
-            if (!rn2(3) || (gi.in_mklev && Is_earthlevel(&u.uz)))
+            if (!rn2(8) || (gi.in_mklev && Is_earthlevel(&u.uz)))
                 (void) mongets(mtmp, WAN_DIGGING);
         } else if (is_giant(ptr)) {
             for (cnt = rn2((int) (mtmp->m_lev / 2)); cnt; cnt--) {
@@ -1288,13 +1288,18 @@ makemon(
     /* quest leader and nemesis both know about all trap types */
     if (ptr->msound == MS_LEADER || ptr->msound == MS_NEMESIS)
         mon_learns_traps(mtmp, ALL_TRAPS);
+    /* locations where monsters are already experienced with wands */
+    if (Is_stronghold(&u.uz) || Is_knox(&u.uz) || In_endgame(&u.uz) ||
+        In_hell(&u.uz) || In_V_tower(&u.uz) || In_quest(&u.uz))
+        mtmp->mwandexp = TRUE;
 
     place_monster(mtmp, x, y);
     mtmp->mcansee = mtmp->mcanmove = TRUE;
+    mtmp->mgenmklev = gi.in_mklev;
     mtmp->seen_resistance = M_SEEN_NOTHING;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
     if ((mmflags & MM_MINVIS) != 0) /* for ^G */
-        mon_set_minvis(mtmp); /* call after place_monster() */
+        mon_set_minvis(mtmp, FALSE); /* call after place_monster() */
 
     switch (ptr->mlet) {
     case S_MIMIC:

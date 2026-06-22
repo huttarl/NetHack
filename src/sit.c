@@ -7,7 +7,6 @@
 #include "artifact.h"
 
 staticfn void throne_sit_effect(void);
-staticfn void rndcurse_inner(boolean);
 staticfn int lay_an_egg(void);
 
 /* take away the hero's money */
@@ -265,9 +264,20 @@ special_throne_effect(int effect) {
         }
         break;
     case 6:
-        /* containers become cursed */
-        rndcurse_inner(TRUE);
+    {
+        /* grease hands and inventory
+
+           Same rules for which items can be affected as grease_ok in apply.c */
+        struct obj *otmp;
+
+        pline("A greasy liquid sprays all over you!");
+        for (otmp = gi.invent; otmp; otmp = otmp->nobj)
+            if (otmp->oclass != COIN_CLASS)
+                otmp->greased = 1;
+        make_glib(rn1(101, 100));
+        update_inventory();
         break;
+    }
     case 7:
         /* lose an intrinsic */
         attrcurse();
@@ -313,10 +323,15 @@ special_throne_effect(int effect) {
         break;
     }
     case 11:
-        /* polymorph effect (not blocked by magic resistance) */
-        pline("This throne was not meant for those such as you!");
-        You_feel("a change coming over you.");
-        polyself(POLY_NOFLAGS);
+        /* polymorph effect (not blocked by magic resistance, but other things
+           that protect from polymorphs work) */
+        if (is_vampire(gy.youmonst.data)) {
+            You_feel("unworthy.");
+        } else {
+            pline("This throne was not meant for those such as you!");
+            You_feel("a change coming over you.");
+            polyself(POLY_NOFLAGS);
+        }
         break;
     case 12:
         /* acid damage */
@@ -371,7 +386,8 @@ lay_an_egg(void)
     uegg->owt = weight(uegg);
     /* this sets hatch timers if appropriate */
     set_corpsenm(uegg, egg_type_from_parent(u.umonnum, FALSE));
-    uegg->known = uegg->dknown = 1;
+    uegg->known = 1;
+    observe_object(uegg);
     You("%s an egg.", eggs_in_water(gy.youmonst.data) ? "spawn" : "lay");
     dropy(uegg);
     stackobj(uegg);
@@ -552,12 +568,6 @@ dosit(void)
 void
 rndcurse(void)
 {
-    rndcurse_inner(FALSE);
-}
-
-staticfn void
-rndcurse_inner(boolean prefer_containers)
-{
     int nobj = 0;
     int cnt, onum;
     struct obj *otmp;
@@ -578,21 +588,15 @@ rndcurse_inner(boolean prefer_containers)
         /* gold isn't subject to being cursed or blessed */
         if (otmp->oclass == COIN_CLASS)
             continue;
-        if (prefer_containers && !otmp->cobj)
-            continue;
         nobj++;
     }
     cnt = rnd(6 / ((!!Antimagic) + (!!Half_spell_damage) + 1));
-    if (prefer_containers)
-        cnt = nobj * 2;
     if (nobj) {
         for (; cnt > 0; cnt--) {
             onum = rnd(nobj);
             for (otmp = gi.invent; otmp; otmp = otmp->nobj) {
                 /* as above */
                 if (otmp->oclass == COIN_CLASS)
-                    continue;
-                if (prefer_containers && !otmp->cobj)
                     continue;
                 if (--onum == 0)
                     break; /* found the target */

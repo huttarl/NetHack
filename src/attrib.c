@@ -1,4 +1,4 @@
-/* NetHack 3.7	attrib.c	$NHDT-Date: 1754979443 2025/08/11 22:17:23 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.134 $ */
+/* NetHack 3.7	attrib.c	$NHDT-Date: 1777000050 2026/04/23 19:07:30 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.137 $ */
 /*      Copyright 1988, 1989, 1990, 1992, M. Stephenson           */
 /* NetHack may be freely redistributed.  See license for details. */
 
@@ -107,7 +107,7 @@ static const struct innate {
 staticfn void exerper(void);
 staticfn int rnd_attr(void);
 staticfn int init_attr_role_redist(int, boolean);
-staticfn void postadjabil(long *);
+staticfn void postadjabil(long *) NONNULLARG1;
 staticfn const struct innate *role_abil(int);
 staticfn const struct innate *check_innate_abil(long *, long);
 staticfn int innately(long *);
@@ -187,11 +187,14 @@ adjattrib(
         return FALSE;
     }
 
+    /* Any successful change also resets abuse / exercise level */
+    AEXE(ndx) = 0;
+
     disp.botl = TRUE;
     if (msgflg <= 0)
         You_feel("%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
     if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
-        (void) encumber_msg();
+        encumber_msg();
     return TRUE;
 }
 
@@ -401,7 +404,7 @@ poisoned(
         /* "Poisoned by a poisoned ___" is redundant */
         done(strstri(pkiller, "poison") ? DIED : POISONING);
     }
-    (void) encumber_msg();
+    encumber_msg();
 }
 
 void
@@ -477,7 +480,7 @@ restore_attrib(void)
         }
     }
     if (disp.botl)
-        (void) encumber_msg();
+        encumber_msg();
 }
 
 #define AVAL 50 /* tune value for exercise gains */
@@ -511,7 +514,7 @@ exercise(int i, boolean inc_or_dec)
                     (inc_or_dec) ? "inc" : "dec", AEXE(i));
     }
     if (svm.moves > 0 && (i == A_STR || i == A_CON))
-        (void) encumber_msg();
+        encumber_msg();
 }
 
 staticfn void
@@ -753,7 +756,7 @@ redist_attr(void)
         if (ABASE(i) < ATTRMIN(i))
             ABASE(i) = ATTRMIN(i);
     }
-    /* (void) encumber_msg(); -- caller needs to do this */
+    /* encumber_msg(); -- caller needs to do this */
 }
 
 /* apply minor variation to attributes */
@@ -776,7 +779,7 @@ staticfn
 void
 postadjabil(long *ability)
 {
-    if (!ability)
+    if (!u.ulevel) /* initializing hero; don't attempt screen update yet */
         return;
     if (ability == &(HWarning) || ability == &(HSee_invisible))
         see_monsters();

@@ -32,6 +32,13 @@
 
 #define OPTIONS_AT_RUNTIME  /* build info done at runtime not text file */
 
+#define EARLY_CONFIGFILE_PASS
+#define TTY_PERM_INVENT
+
+#ifdef WIN32CON
+#define IDLECHECKPOINT
+#endif
+
 /*
  * -----------------------------------------------------------------
  *  The remaining code shouldn't need modification.

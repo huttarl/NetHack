@@ -669,8 +669,10 @@ docall(struct obj *obj)
             undiscover_object(obj->otyp);
     } else {
         *uname_p = dupstr(buf);
-        discover_object(obj->otyp, FALSE, TRUE); /* possibly add to disco[] */
+        discover_object(obj->otyp, FALSE, TRUE, TRUE); /* possibly add to disco[] */
     }
+    if (obj->where == OBJ_INVENT || carrying(obj->otyp))
+        update_inventory();
 }
 
 staticfn void
@@ -1482,7 +1484,7 @@ static NEARDATA const char *const hliquids[] = {
     "caramel sauce", "ink", "aqueous humour", "milk substitute",
     "fruit juice", "glowing lava", "gastric acid", "mineral water",
     "cough syrup", "quicksilver", "sweet vitriol", "grey goo", "pink slime",
-    "cosmic latte",
+    "cosmic latte", "bone oil", "custard", "lard", "vinegar", "creosote",
     /* "new coke (tm)", --better not */
 };
 

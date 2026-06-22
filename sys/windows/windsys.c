@@ -25,8 +25,10 @@
 #include "wintty.h"
 #endif
 #include <inttypes.h>
+#include <errno.h>
 
 #ifdef WIN32
+#include <rpc.h>
 #include <VersionHelpers.h>
 #include <UserEnv.h>
 
@@ -72,7 +74,6 @@ static HWND GetConsoleHwnd(void);
 extern void backsp(void);
 #endif
 int windows_console_custom_nhgetch(void);
-extern void safe_routines(void);
 int windows_early_options(const char *window_opt);
 unsigned long sys_random_seed(void);
 #if 0
@@ -178,7 +179,7 @@ filesize(char *file)
  * Chdrive() changes the default drive.
  */
 void
-chdrive(char *str)
+chdrive(const char *str)
 {
     char *ptr;
     char drive;
@@ -260,11 +261,11 @@ VA_DECL(const char *, s)
         buf[0] = '\n';
         (void) vsnprintf(&buf[1], sizeof buf - (1 + sizeof "\n"), s, VA_ARGS);
         Strcat(buf, "\n");
-        msmsg(buf);
+        msmsg("%s", buf);
     } else {
         (void) vsnprintf(buf, sizeof buf - sizeof "\n", s, VA_ARGS);
         Strcat(buf, "\n");
-        raw_printf(buf);
+        raw_printf("%s",buf);
     }
 #ifdef MSWIN_GRAPHICS
     if (windowprocs.win_raw_print == mswin_raw_print)
@@ -292,10 +293,6 @@ win32_abort(void)
             exit_nhwindows((char *) 0);
         iflags.window_inited = FALSE;
     }
-#ifdef WIN32CON
-    if (!WINDOWPORT(mswin) && !WINDOWPORT(safestartup))
-        safe_routines();
-#endif
     if (wizard) {
         raw_print("Execute debug breakpoint wizard?");
         if ((c = nhgetch()) == 'y' || c == 'Y')
@@ -521,15 +518,6 @@ nethack_exit(int code)
      * GUILaunched is defined and set in consoletty.c.
      */
 
-
-#ifdef WIN32CON
-    if (!GUILaunched) {
-        windowprocs = *get_safe_procs(1);
-        /* use our custom version which works
-           a little cleaner than the stdio one */
-        windowprocs.win_nhgetch = windows_console_custom_nhgetch;
-    } else
-#endif
     if (getreturn_enabled) {
         raw_print("\n");
         if (iflags.window_inited)
@@ -541,6 +529,36 @@ nethack_exit(int code)
     free_winmain_stuff();
 #endif
     exit(code);
+}
+
+void
+get_nhuuid(void)
+{
+    UUID binuuid;
+    unsigned char *stmp;
+    RPC_STATUS rpcstatus;
+
+    if (svn.nhuuid[0])
+        return;
+
+    rpcstatus = UuidCreate(&binuuid);
+    if (rpcstatus == RPC_S_OK) {
+        rpcstatus = UuidToStringA(&binuuid, &stmp);
+        if (rpcstatus == RPC_S_OK) {
+            Snprintf(svn.nhuuid, sizeof svn.nhuuid, "%s", (char *) stmp);
+            RpcStringFree(&stmp);
+        }
+    }
+}
+
+void
+free_nhuuid(void)
+{
+    int i;
+
+    for (i = 0; i < SIZE(svn.nhuuid); i++) {
+        svn.nhuuid[i] = 0;
+    }
 }
 
 #ifdef WIN32CON
@@ -579,10 +597,6 @@ getreturn(const char *str)
    initializing the window port */
 void nethack_enter_windows(void)
 {
-#ifdef WIN32CON
-    if (WINDOWPORT(tty))
-        nethack_enter_consoletty();
-#endif
 }
 
 /* CP437 to Unicode mapping according to the Unicode Consortium */
@@ -1337,8 +1351,8 @@ printf("E2: M=%s e=%d\n",msg,errnum);
 
 int
 win32_cr_gettrace(int maxframes USED_IF_BACKTRACE,
-		  char *out USED_IF_BACKTRACE,
-		  int outsize USED_IF_BACKTRACE)
+                  char *out USED_IF_BACKTRACE,
+                  int outsize USED_IF_BACKTRACE)
 {
 #ifdef USE_BACKTRACE
     userstate.error_count = 0;

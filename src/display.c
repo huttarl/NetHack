@@ -1,4 +1,4 @@
-/* NetHack 3.7	display.c	$NHDT-Date: 1745114235 2025/04/19 17:57:15 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.260 $ */
+/* NetHack 3.7	display.c	$NHDT-Date: 1777000050 2026/04/23 19:07:30 $  $NHDT-Branch: NetHack-3.7 $:$NHDT-Revision: 1.263 $ */
 /* Copyright (c) Dean Luick, with acknowledgements to Kevin Darcy */
 /* and Dave Cohrs, 1990.                                          */
 /* NetHack may be freely redistributed.  See license for details. */
@@ -346,7 +346,7 @@ map_object(struct obj *obj, int show)
             neardist = (r * r) * 2 - r; /* same as r*r + r*(r-1) */
 
         if (distu(x, y) <= neardist) {
-            obj->dknown = 1;
+            observe_object(obj);
             glyph = obj_to_glyph(obj, newsym_rn2);
         }
     }
@@ -753,10 +753,9 @@ feel_location(coordxy x, coordxy y)
     /* replicate safeguards used by newsym(); might not be required here */
     if (_suppress_map_output())
         return;
-
     if (!isok(x, y))
         return;
-    lev = &(levl[x][y]);
+    lev = &levl[x][y];
     /* If hero's memory of an invisible monster is accurate, we want to keep
      * him from detecting the same monster over and over again on each turn.
      * We must return (so we don't erase the monster).  (We must also, in the
@@ -917,15 +916,24 @@ feel_location(coordxy x, coordxy y)
 void
 newsym(coordxy x, coordxy y)
 {
+    struct rm *lev;
+    struct engr *ep;
     struct monst *mon;
     int see_it;
     boolean worm_tail;
-    struct rm *lev = &(levl[x][y]);
-    struct engr *ep;
 
     /* don't try to produce map output when level is in a state of flux */
     if (_suppress_map_output())
         return;
+    /* should never happen; same error handling as u_on_newpos() */
+    if (!isok(x, y)) {
+        void (*errfunc)(const char *, ...) PRINTF_F_PTR(1, 2);
+
+        errfunc = (x < 0 || y < 0 || x > COLNO - 1 || y > ROWNO - 1) ? panic
+                  : impossible; /* misuse of column 0 is less severe */
+        (*errfunc)("newsym: attempting screen update for <%d,%d>", x, y);
+        return;
+    }
 
     /* only permit updating the hero when swallowed */
     if (u.uswallow) {
@@ -939,6 +947,7 @@ newsym(coordxy x, coordxy y)
         if (!(is_pool_or_lava(x, y) || is_ice(x, y)) || !next2u(x, y))
             return;
     }
+    lev = &levl[x][y];
 
     /* Can physically see the location. */
     if (cansee(x, y)) {
@@ -1496,6 +1505,8 @@ see_monsters(void)
     for (mon = fmon; mon; mon = mon->nmon) {
         if (DEADMONSTER(mon))
             continue;
+        if ((mon->mstate & MON_STILL_ARRIVING) != 0)
+            continue;
         newsym(mon->mx, mon->my);
         if (mon->wormno)
             see_wsegs(mon);
@@ -1585,7 +1596,7 @@ see_nearby_objects(void)
             if (!cansee(ix, iy) || distu(ix, iy) > neardist)
                 continue;
 
-            obj->dknown = 1; /* near enough to see it */
+            observe_object(obj);
             /* operate on remembered glyph rather than current one */
             glyph = levl[ix][iy].glyph;
             if (glyph_is_generic_object(glyph))
@@ -2656,7 +2667,7 @@ const int altarcolors[] = {
     altar_color_unaligned, altar_color_chaotic, altar_color_neutral,
     altar_color_lawful, altar_color_other
 };
-const int explodecolors[7] = {
+const int explodecolors[EXPL_MAX] = {
     explode_color_dark,   explode_color_noxious, explode_color_muddy,
     explode_color_wet,    explode_color_magical, explode_color_fiery,
     explode_color_frosty,

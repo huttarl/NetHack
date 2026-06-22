@@ -734,9 +734,6 @@ mswin_exit_nhwindows(const char *str)
     /* Write Window settings to the registry */
     mswin_write_reg();
 
-    /* set things back to failsafes */
-    windowprocs = *get_safe_procs(0);
-
     /* and make sure there is still a way to communicate something */
     windowprocs.win_raw_print = mswin_raw_print;
     windowprocs.win_raw_print_bold = mswin_raw_print_bold;
@@ -884,7 +881,8 @@ mswin_display_nhwindow(winid wid, boolean block)
             if (!block) {
                 UpdateWindow(GetNHApp()->windowlist[wid].win);
             } else {
-                if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
+                if ((GetNHApp()->windowlist[wid].type == NHW_MAP)
+                    || (GetNHApp()->windowlist[wid].type == NHW_MESSAGE)) {
                     (void) mswin_nhgetch();
                 }
             }
